@@ -3,7 +3,8 @@ const mysql = require('mysql2');
 const inquirer = require('inquirer');
 const cTable = require('console.table');
 // importing connection to db
-const connection = require('./config/connection');
+const database = require('./config');
+
 
 // display message after app connects
 connectionMessage = () => { 
@@ -39,40 +40,45 @@ const userPrompts = () => {
             ]
         }
     ])
-        .then((answers) => {
-            const {choices} = answers;
-
-            if (choices = "View All Departments") {
+    .then(function (answer) {
+        switch (answer.action) {
+            case "View All Departments":
                 viewDepts();
-            }
-
-            if (choices === "Add a Department") {
+                break;
+            case "Add a Department":
                 addDepts();
-            }
-
-            if (choices === "View All Roles") {
+                break;
+            case "View All Roles":
                 viewRoles();
-            }
-
-            if (choices === "Add a Role") {
+                break;
+            case "Add a Role":
                 addRole();
-            }
-
-            if (choices === "View All Employees") {
+                break;
+            case "View All Employees":
                 viewEmployees();
-            }
-
-            if (choices === "Add an Employee") {
+                break;
+            case "Add an Employee":
                 addEmployee();
-            }
-
-            if (choices === "Update an Employee Role") {
+                break;
+            case "Update an Employee Role":
                 updateEmpRole();
-            }
-
-            if (choices === "No Actions Necessary") {
-                connection.end()
+                break;
+            case "No Actions Necessary":
+                exit();
+                break;
+            default:
+                break;
             };
+        })
+    };
 
-        });
-};
+// function to view all departments in the database
+
+// viewDepts = () => {
+//     const sql = 'SELECT * FROM department';
+//     connection.query(query, function(err, res) {
+//         if (err) throw err;
+//         console.table('Viewing Departments: \n', res);
+
+//     })
+// }
