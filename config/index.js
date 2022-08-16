@@ -8,18 +8,21 @@ class employeeDatabase {
         this.connection = connection;
     }
 
+    // view departments function 
     viewDepts() {
         return this.connection.promise().query(
             `SELECT department.id, department.name FROM department`;
         );
     }
 
+    // add departments function
     addDepts(department) {
         return this.connection.promise().query(
             `INSERT INTO department SET ?, department`;
         );
     }
 
+    // view roles function
     viewRoles() {
         return this.connection.promise().query(
             `SELECT role.id. 
@@ -30,12 +33,14 @@ class employeeDatabase {
         );
     }
 
+    // add roles function 
     addRole() {
         return this.connection.promise().query(
             `INSERT INTO role SET ?`, role
         );
     }
 
+    // view employees function
     viewEmployees() {
         return this.connection.promise().query(
             `SELECT employee.id, 
@@ -51,12 +56,14 @@ class employeeDatabase {
         );
     }
 
+    // add employee function
     addEmployee() {
         return this.connection.promise().query(
             `INSERT INTO employee SET ?`, employee 
         );
     }
 
+    // update employee role function 
     updateEmpRole() {
         return this.connection.promise().query(
             `UPDATE employee SET role_id = ? WHERE id = ?`, 
@@ -65,4 +72,5 @@ class employeeDatabase {
     }
 }
 
+// exporting new database to server.js
 module.exports = new employeeDatabase(connection);
