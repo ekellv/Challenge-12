@@ -4,6 +4,7 @@ const inquirer = require('inquirer');
 const cTable = require('console.table');
 // importing connection to db
 const database = require('./config');
+const { viewDepts, addDepts, viewRoles, addRole } = require('./config');
 
 
 // display message after app connects
@@ -42,28 +43,28 @@ const userPrompts = () => {
     ])
     .then(function (answer) {
         switch (answer.action) {
-            case "View All Departments":
+            case'"View All Departments':
                 viewDepts();
                 break;
-            case "Add a Department":
+            case 'Add a Department':
                 addDepts();
                 break;
-            case "View All Roles":
+            case 'View All Roles':
                 viewRoles();
                 break;
-            case "Add a Role":
+            case 'Add a Role':
                 addRole();
                 break;
-            case "View All Employees":
+            case 'View All Employees':
                 viewEmployees();
                 break;
-            case "Add an Employee":
+            case 'Add an Employee':
                 addEmployee();
                 break;
-            case "Update an Employee Role":
+            case 'Update an Employee Role':
                 updateEmpRole();
                 break;
-            case "No Actions Necessary":
+            case 'No Actions Necessary':
                 exit();
                 break;
             default:
@@ -72,13 +73,70 @@ const userPrompts = () => {
         })
     };
 
-// function to view all departments in the database
+viewDepts = () => {
+    database.viewDepts()
+        .then(([rows]) => {
+            let department = rows; 
+            console.log('\n');
+            console.table(department);
+        })
+        .then(() => userPrompts());
+}
 
-// viewDepts = () => {
-//     const sql = 'SELECT * FROM department';
-//     connection.query(query, function(err, res) {
-//         if (err) throw err;
-//         console.table('Viewing Departments: \n', res);
+addDepts = () => {
+    prompt([
+        {
+            name: 'name',
+            message: 'Please type the name of the department you\'d like to add:'
+        }
+    ])
+    .then(res => {
+        let name = res;
+        database.addDepts(name)
+            .then(() => console.log(`${name.name} has been added to the department database.`))
+            .then(() => userPrompts());
+    })
+}
 
-//     })
-// }
+viewRoles = () => {
+    database.viewRoles()
+        .then(([rows]) => {
+            let role = rows;
+            console.log('\n');
+            console.table(roles);
+        })
+        .then(() => userPrompts());
+}
+
+addRole = () => {
+    database.viewDepts()
+        .then(([rows]) => {
+            let department = rows;
+            const userDeptChoice = department.map(({ id, name }) =>({
+                name: name,
+                value: id
+            }));
+
+        prompt([
+            {
+                name: 'title',
+                message: 'Please type the name of the role you\'d like to add:'
+            },
+            {
+                name: 'salary',
+                message: 'Please type the salary of the new role:'
+            },
+            {
+                type: 'list',
+                name: 'department_id',
+                message: 'In which department is the new role?',
+                choices: userDeptChoice
+            }
+        ])
+            .then(role => {
+                database.addRole(role)
+                    .then(() => console.log(`${role.title} has been added to the role database.`))
+                    .then(() => userPrompts())
+            })
+        })
+}
