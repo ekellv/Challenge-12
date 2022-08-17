@@ -22,14 +22,14 @@ connection.connect(function (err) {
 // module.exports = connection; 
 // display message after app connects
 connectionMessage = () => { 
-    console.log("____  _  _  ____  __     __  _  _  ____  ____")
-    console.log("(  __)( \/ )(  _ \(  )   /  \( \/ )(  __)(  __)")
-    console.log(") _) / \/ \ ) __// (_/\(  O ))  /  ) _)  ) _)")
-    console.log("(____)\_)(_/(__)  \____/ \__/(__/  (____)(____)")
-    console.log("____  ____   __    ___  __ _  ____  ____  ")    
-    console.log("(_  _)(  _ \ / _\  / __)(  / )(  __)(  _ \  ")   
-    console.log(")(   )   //    \( (__  )  (  ) _)  )   /  ") 
-    console.log("(__) (__\_)\_/\_/ \___)(__\_)(____)(__\_)  ") 
+    console.log(" ____  _  _  ____  __     __  _  _  ____  ____")
+    console.log("(  __)( \\/ )(  _ \\(  )   /  \\( \\/ )(  __)(  __)")
+    console.log(" ) _) / \\/ \\ ) __// (_/\\(  O ))  /  ) _)  ) _)")
+    console.log("(____)\\_)(_/(__)  \\____/ \\__/(__/  (____)(____)")
+    console.log("  ____  ____   __    ___  __ _  ____  ____  ")    
+    console.log(" (_  _)(  _ \\ / _\\  / __)(  / )(  __)(  _ \\  ")   
+    console.log("   )(   )   //    \\( (__  )  (  ) _)  )   /  ") 
+    console.log("  (__) (__\\_)\\_/\\_/ \\___)(__\\_)(____)(__\\_)  ") 
     
     userPrompts();
 }
@@ -206,21 +206,22 @@ userAddEmployee = () => {
             database.viewRoles()
                 .then(([rows]) => {
                     let roles = rows;
-                    const roleOptions = role.map(({ id, title}) => ({
-                        name: 'title',
-                        value: 'id'
+                    const roleOptions = roles.map(({ id, title }) => ({
+                        name: title,
+                        value: id
                     }));
                     
             inquirer.prompt([
                 {
                 type: 'list',
-                name: 'roleID',
+                name: 'rolesID',
                 message: 'Please select the new employee\'s role: ',
                 choices: roleOptions
                 }
             ])
                 .then(res => {
-                    let roleId = res.roleID;
+
+                    let rolesID = res.rolesID;
 
                 database.viewEmployees()
                     .then(([rows]) => {
@@ -240,7 +241,7 @@ userAddEmployee = () => {
                 .then(res => {
                     let employee = {
                         manager_id: res.managerID,
-                        role_id: roleID,
+                        roles_id: rolesID,
                         first_name: firstName,
                         last_name: lastName
                     }
@@ -249,7 +250,7 @@ userAddEmployee = () => {
                     .then(() => console.log(
                         `${firstName} ${lastName} has been added to the database!`
                     ))
-                    .then(() => userPrompts())
+                .then(() => userPrompts());
                     })
                 })            
         })
@@ -259,12 +260,12 @@ userAddEmployee = () => {
 userUpdateEmpRole = () => {
     database.viewEmployees()
         .then(([rows]) => {
-            const employee = rows
+            let employee = rows
             const employeeOptions = employee.map(({ id, first_name, last_name }) => ({
                 name: `${first_name} ${last_name}`,
                 value: id
             }));
-    prompt ([
+    inquirer.prompt ([
         {
             type: 'list',
             name: 'employeeID',
@@ -273,23 +274,23 @@ userUpdateEmpRole = () => {
         }
     ])
         .then(res => {
-            const employeeID = res.employeeID;
+            let employeeID = res.employeeID;
             database.viewRoles()
                 .then(([rows]) => {
-                    const roles = rows;
-                    const roleOptions = role.map(({ id, title }) => ({
+                    let roles = rows;
+                    const rolesOptions = roles.map(({ id, title }) => ({
                         name: title,
                         value: id
                     }));
-    prompt ([
+    inquirer.prompt ([
         {
             type: 'list',
-            name: 'roleID',
+            name: 'rolesID',
             message: 'Please select the employee\'s new role:',
-            choices: roleOptions
+            choices: rolesOptions
         }
     ])
-        .then(res => database.userUpdateEmpRole(employeeID, res.roleID))
+        .then(res => database.userUpdateEmpRole(employeeID, res.rolesID))
         .then(() => console.log('The employee\'s role has been updated in the database.'))
         .then(() => userPrompts())
             });

@@ -23,11 +23,7 @@ class employeeDatabase {
     // view roles function
     viewRoles() {
         return this.connection.promise().query(
-            `SELECT role.id, 
-            role.title, 
-            department.name AS department FROM role, 
-            role.salary FROM role, 
-            LEFT JOIN department on role.department_id = department.id;`
+            `SELECT roles.id, roles.title, department.name AS department, roles.salary FROM roles INNER JOIN department on roles.department_id = department.id;`
         );
     }
 
@@ -41,31 +37,31 @@ class employeeDatabase {
     // view employees function
     viewEmployees() {
         return this.connection.promise().query(
-            `SELECT employee.id, 
-            employee.first_name, 
-            employee.last_name, 
-            role.title, 
-            department.name AS department, 
-            role.salary, 
-            CONCAT(manager.first_name, ' ', manager.last_name) AS manager FROM employee 
-            LEFT JOIN role on employee.role_id = role.id 
-            LEFT JOIN department on role.department_id = department.id 
-            LEFT JOIN employee manager on manager.id = employee.manager_id`
+            `SELECT * FROM employee`
+            // `SELECT employee.id, 
+            // employee.first_name, 
+            // employee.last_name, 
+            // roles.title, 
+            // department.name AS department, 
+            // roles.salary, 
+            // CONCAT(manager.first_name, ' ', manager.last_name) AS manager 
+            // FROM employee 
+            // LEFT JOIN roles ON employee.role_id = role.id, 
+            // LEFT JOIN department ON roles.department_id = department.id, 
+            // LEFT JOIN employee manager ON employee.manager_id = manager.id;`
         );
     }
 
     // add employee function
-    addEmployee() {
-        return this.connection.promise().query(
-            `INSERT INTO employee SET ?`, employee 
-        );
+    addEmployee(employee) {
+        return this.connection.promise().query(`INSERT INTO employee SET ?`, employee);
     }
 
     // update employee role function 
     updateEmpRole() {
         return this.connection.promise().query(
-            `UPDATE employee SET role_id = ? WHERE id = ?`, 
-            [roleID, employeeID]
+            `UPDATE employee SET roles_id = ? WHERE id = ?`, 
+            [rolesID, employeeID]
         );
     }
 }
