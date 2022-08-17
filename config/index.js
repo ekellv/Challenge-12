@@ -11,32 +11,30 @@ class employeeDatabase {
     // view departments function 
     viewDepts() {
         return this.connection.promise().query(
-            `SELECT department.id, department.name FROM department`;
+            `SELECT department.id, department.name FROM department`
         );
     }
 
     // add departments function
     addDepts(department) {
-        return this.connection.promise().query(
-            `INSERT INTO department SET ?, department`;
-        );
+        return this.connection.promise().query(`INSERT INTO department SET ?`, department);
     }
 
     // view roles function
     viewRoles() {
         return this.connection.promise().query(
-            `SELECT role.id. 
+            `SELECT role.id, 
             role.title, 
             department.name AS department FROM role, 
             role.salary FROM role, 
-            INNER JOIN department on role.department_id = department.id;`
+            LEFT JOIN department on role.department_id = department.id;`
         );
     }
 
     // add roles function 
-    addRole() {
+    addRole(roles) {
         return this.connection.promise().query(
-            `INSERT INTO role SET ?`, role
+            `INSERT INTO roles SET ?`, roles
         );
     }
 
@@ -52,7 +50,7 @@ class employeeDatabase {
             CONCAT(manager.first_name, ' ', manager.last_name) AS manager FROM employee 
             LEFT JOIN role on employee.role_id = role.id 
             LEFT JOIN department on role.department_id = department.id 
-            LEFT JOIN employee manager on manager.id = employee.manager_id`;
+            LEFT JOIN employee manager on manager.id = employee.manager_id`
         );
     }
 
