@@ -3,7 +3,7 @@ const mysql = require('mysql2');
 const inquirer = require('inquirer');
 const cTable = require('console.table');
 // importing connection to db
-const database = require('./config/index');
+const dbLink = require('./config/index');
 
 // const mysql = require('mysql2'); 
 
@@ -111,7 +111,7 @@ const userPrompts = () => {
     };
 
 userViewDepts = () => {
-    database.viewDepts()
+    dbLink.viewDepts()
         .then(([rows]) => {
             let department = rows; 
             console.log('\n');
@@ -129,14 +129,14 @@ userAddDepts = () => {
     ])
     .then(res => {
         let name = res;
-        database.addDepts(name)
+        dbLink.addDepts(name)
             .then(() => console.log(`${name.name} has been added to the department database.`))
             .then(() => userPrompts());
     })
 }
 
 userViewRoles = () => {
-    database.viewRoles()
+    dbLink.viewRoles()
         .then(([rows]) => {
             let roles = rows;
             console.log('\n');
@@ -146,7 +146,7 @@ userViewRoles = () => {
 }
 
 userAddRole = () => {
-    database.viewDepts()
+    dbLink.viewDepts()
         .then(([rows]) => {
             let department = rows;
             const deptOptions = department.map(({ id, name }) =>({
@@ -171,7 +171,7 @@ userAddRole = () => {
             }
         ])
             .then(roles => {
-                database.addRole(roles)
+                dbLink.addRole(roles)
                     .then(() => console.log(`${roles.title} has been added to the role database.`))
                     .then(() => userPrompts())
             })
@@ -179,7 +179,7 @@ userAddRole = () => {
 }
 
 userViewEmployees = () => {
-    database.viewEmployees()
+    dbLink.viewEmployees()
         .then(([rows]) => {
             let employee = rows;
             console.log('\n');
@@ -191,110 +191,111 @@ userViewEmployees = () => {
 userAddEmployee = () => {
     inquirer.prompt([
         {
-            name: 'first_name',
-            message: 'Please enter the new employee\'s first name: \n'
+            name: "first_name",
+            message: "What's the employee's first name?"
         },
         {
-            name: 'last_name',
-            message: 'Please enter the new employee\'s last name: \n'
+            name: "last_name",
+            message: "What's the employee's last name?"
         }
     ])
         .then(res => {
             let firstName = res.first_name;
             let lastName = res.last_name;
 
-            database.viewRoles()
+            dbLink.viewRoles()
                 .then(([rows]) => {
                     let roles = rows;
-                    const roleOptions = roles.map(({ id, title }) => ({
+                    const roleChoices = roles.map(({ id, title }) => ({
                         name: title,
                         value: id
                     }));
-                    
-            inquirer.prompt([
-                {
-                type: 'list',
-                name: 'rolesID',
-                message: 'Please select the new employee\'s role: ',
-                choices: roleOptions
-                }
-            ])
-                .then(res => {
 
-                    let rolesID = res.rolesID;
-
-                database.viewEmployees()
-                    .then(([rows]) => {
-                        let employee = rows;
-                        const managerOptions = employee.map(({ id, first_name, last_name }) => ({
-                            name: `${first_name} ${last_name}`,
-                            value: id
-                        }));
-                    managerOptions.unshift({ name: 'None', value: null});
-            
-            inquirer.prompt({ 
-                type: 'list',
-                name: 'managerID',
-                message: 'Please select the new employee\'s manager: ',
-                choices: managerOptions
-                })
-                .then(res => {
-                    let employee = {
-                        manager_id: res.managerID,
-                        roles_id: rolesID,
-                        first_name: firstName,
-                        last_name: lastName
-                    }
-                database.addEmployee(employee);
-                })
-                    .then(() => console.log(
-                        `${firstName} ${lastName} has been added to the database!`
-                    ))
-                .then(() => userPrompts());
+                    inquirer.prompt({
+                        type: "list",
+                        name: "roleId",
+                        message: "What's the employee's role?",
+                        choices: roleChoices
                     })
-                })            
+                        .then(res => {
+                            let roleId = res.roleId;
+
+                            dbLink.viewEmployees()
+                                .then(([rows]) => {
+                                    let employees = rows;
+                                    const managerChoices = employees.map(({ id, first_name, last_name }) => ({
+                                        name: `${first_name} ${last_name}`,
+                                        value: id
+                                    }));
+
+                                    managerChoices.unshift({ name: "None", value: null });
+
+                                    inquirer.prompt({
+                                        type: "list",
+                                        name: "managerId",
+                                        message: "Who's the employee's manager?",
+                                        choices: managerChoices
+                                    })
+                                        .then(res => {
+                                            let employee = {
+                                                manager_id: res.managerId,
+                                                role_id: roleId,
+                                                first_name: firstName,
+                                                last_name: lastName
+                                            }
+
+                                            dbLink.addEmployee(employee);
+                                        })
+                                        .then(() => console.log(
+                                            `Added ${firstName} ${lastName} to the database`
+                                        ))
+                                        .then(() => userPrompts())
+                                })
+                        })
+                })
         })
-    })
 }
 
 userUpdateEmpRole = () => {
-    database.viewEmployees()
-        .then(([rows]) => {
-            let employee = rows
-            const employeeOptions = employee.map(({ id, first_name, last_name }) => ({
-                name: `${first_name} ${last_name}`,
-                value: id
-            }));
-    inquirer.prompt ([
-        {
-            type: 'list',
-            name: 'employeeID',
-            message: 'Please select the employee whose role you\'d like to update:',
-            choices: employeeOptions
-        }
-    ])
-        .then(res => {
-            let employeeID = res.employeeID;
-            database.viewRoles()
-                .then(([rows]) => {
-                    let roles = rows;
-                    const rolesOptions = roles.map(({ id, title }) => ({
-                        name: title,
-                        value: id
-                    }));
-    inquirer.prompt ([
-        {
-            type: 'list',
-            name: 'rolesID',
-            message: 'Please select the employee\'s new role:',
-            choices: rolesOptions
-        }
-    ])
-        .then(res => database.userUpdateEmpRole(employeeID, res.rolesID))
-        .then(() => console.log('The employee\'s role has been updated in the database.'))
-        .then(() => userPrompts())
+    dbLink.viewEmployees()
+    .then(([rows]) => {
+        let employee = rows;
+        const employeeOptions = employee.map(({ id, first_name, last_name }) => ({
+            name: `${first_name} ${last_name}`,
+            value: id
+        }));
+
+        inquirer.prompt([
+            {
+                type: "list",
+                name: "employeeID",
+                message: "Which employee's role do you want to update?",
+                choices: employeeOptions
+            }
+        ])
+            .then(res => {
+                let employeeID = res.employeeID;
+                dbLink.viewRoles()
+                    .then(([rows]) => {
+                        let roles = rows;
+                        const roleOptions = roles.map(({ id, title }) => ({
+                            name: title,
+                            value: id
+                        }));
+
+                        inquirer.prompt([
+                            {
+                                type: "list",
+                                name: "rolesID",
+                                message: "What's the new role of this employee?",
+                                choices: roleOptions
+                            }
+                        ])
+                            .then(res => dbLink.updateEmpRole(employeeID, res.rolesID))
+                            .then(() => console.log("Employee's role is updated"))
+                            .then(() => userPrompts())
+                    });
             });
-        });
     })
 }
 
