@@ -78,11 +78,18 @@ THEN I am prompted to select an employee to update and their new role and this i
 
 ## Visuals: 
 
+![emp-tracker-1](https://user-images.githubusercontent.com/103372188/185486206-30e9d230-3bfc-4d86-8ac3-587ce5b86518.png)
+![emp-tracker-2](https://user-images.githubusercontent.com/103372188/185486224-af6179bc-9e6b-4446-855e-213715945dde.png)
+![emp-tracker-3](https://user-images.githubusercontent.com/103372188/185486235-1583b3c1-c5f6-457d-8f80-0004bafd78e4.png)
 
 
 ## Technologies
 
-
+ * [Node.js](https://nodejs.org/en/)
+ * [Inquirer](https://www.npmjs.com/package/inquirer)
+ * [Node MYSQL 2](https://www.npmjs.com/package/mysql2)
+ * [Console.table](https://www.npmjs.com/package/console.table)
+ * [MYSQL](https://dev.mysql.com/)
 
 ## Installation 
 
@@ -108,11 +115,7 @@ This repository is not currently accepting contributions.
 
 ## Testing 
 
-The command to run tests on this application is: 
-
-`
 No tests are currently installed. 
-`
 
 ## Authors and Acknowledgements
 
