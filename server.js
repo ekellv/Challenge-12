@@ -3,23 +3,8 @@ const mysql = require('mysql2');
 const inquirer = require('inquirer');
 const cTable = require('console.table');
 // importing connection to db
-const dbLink = require('./config/index');
+const dbLink = require('./config/');
 
-// const mysql = require('mysql2'); 
-
-const connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: 'olly123',
-    database: 'employees_db'
-});
-
-connection.connect(function (err) {
-    if (err) throw err;
-    connectionMessage();
-});
-
-// module.exports = connection; 
 // display message after app connects
 connectionMessage = () => { 
     console.log(" ____  _  _  ____  __     __  _  _  ____  ____")
@@ -34,8 +19,7 @@ connectionMessage = () => {
     userPrompts();
 }
 
-// begin inquirer prompts for user to choose from sift through
-    
+// begin inquirer prompts for user to choose what they'd like to view
 const userPrompts = () => {
     inquirer.prompt ([
         {
@@ -110,6 +94,7 @@ const userPrompts = () => {
         })
     };
 
+// user can view all departments in database
 userViewDepts = () => {
     dbLink.viewDepts()
         .then(([rows]) => {
@@ -120,21 +105,23 @@ userViewDepts = () => {
         .then(() => userPrompts());
 }
 
+// user can add departments to the database
 userAddDepts = () => {
     inquirer.prompt([
         {
             name: 'name',
-            message: 'Please type the name of the department you\'d like to add:'
+            message: "Please enter the name of the department you'd like to add:"
         }
     ])
     .then(res => {
         let name = res;
-        dbLink.addDepts(name)
-            .then(() => console.log(`${name.name} has been added to the department database.`))
+        dbLink.addDepts(dept_name)
+            .then(() => console.log(`${name.dept_name} has been added to the department database.`))
             .then(() => userPrompts());
     })
 }
 
+// user can view all of the roles in the database
 userViewRoles = () => {
     dbLink.viewRoles()
         .then(([rows]) => {
@@ -145,6 +132,7 @@ userViewRoles = () => {
         .then(() => userPrompts());
 }
 
+// user can add to the roles already in the database
 userAddRole = () => {
     dbLink.viewDepts()
         .then(([rows]) => {
@@ -157,16 +145,16 @@ userAddRole = () => {
         inquirer.prompt([
             {
                 name: 'title',
-                message: 'Please type the name of the role you\'d like to add:'
+                message: "Please enter the name of the role you'd like to add:"
             },
             {
                 name: 'salary',
-                message: 'Please type the salary of the new role:'
+                message: 'Please enter the salary of the new role:'
             },
             {
                 type: 'list',
                 name: 'department_id',
-                message: 'In which department is the new role?',
+                message: "Please select which department the new role belongs in:",
                 choices: deptOptions
             }
         ])
@@ -178,6 +166,7 @@ userAddRole = () => {
         })
 }
 
+// user can view all of the employees in the database
 userViewEmployees = () => {
     dbLink.viewEmployees()
         .then(([rows]) => {
@@ -188,15 +177,16 @@ userViewEmployees = () => {
         .then(() => userPrompts());
 }
 
+// user can add to the employees already in the database
 userAddEmployee = () => {
     inquirer.prompt([
         {
-            name: "first_name",
-            message: "What's the employee's first name?"
+            name: 'first_name',
+            message: "Please enter the new employee's first name:"
         },
         {
-            name: "last_name",
-            message: "What's the employee's last name?"
+            name: 'last_name',
+            message: "Please enter the new employee's last name:"
         }
     ])
         .then(res => {
@@ -212,9 +202,9 @@ userAddEmployee = () => {
                     }));
 
                     inquirer.prompt({
-                        type: "list",
-                        name: "roleId",
-                        message: "What's the employee's role?",
+                        type: 'list',
+                        name: 'roleId',
+                        message: "Please select the new employee's role:",
                         choices: roleChoices
                     })
                         .then(res => {
@@ -231,9 +221,9 @@ userAddEmployee = () => {
                                     managerChoices.unshift({ name: "None", value: null });
 
                                     inquirer.prompt({
-                                        type: "list",
-                                        name: "managerId",
-                                        message: "Who's the employee's manager?",
+                                        type: 'list',
+                                        name: 'managerId',
+                                        message: "Please select the new employee's manager:",
                                         choices: managerChoices
                                     })
                                         .then(res => {
@@ -247,7 +237,7 @@ userAddEmployee = () => {
                                             dbLink.addEmployee(employee);
                                         })
                                         .then(() => console.log(
-                                            `Added ${firstName} ${lastName} to the database`
+                                            `${firstName} ${lastName} has been added to the employee database.`
                                         ))
                                         .then(() => userPrompts())
                                 })
@@ -256,6 +246,7 @@ userAddEmployee = () => {
         })
 }
 
+// user can update the roles of employees already in the database 
 userUpdateEmpRole = () => {
     dbLink.viewEmployees()
     .then(([rows]) => {
@@ -267,9 +258,9 @@ userUpdateEmpRole = () => {
 
         inquirer.prompt([
             {
-                type: "list",
-                name: "employeeID",
-                message: "Which employee's role do you want to update?",
+                type: 'list',
+                name: 'employeeID',
+                message: "Please select the employee whose role you'd like you change:",
                 choices: employeeOptions
             }
         ])
@@ -292,13 +283,14 @@ userUpdateEmpRole = () => {
                             }
                         ])
                             .then(res => dbLink.updateEmpRole(employeeID, res.rolesID))
-                            .then(() => console.log("Employee's role is updated"))
+                            .then(() => console.log("This employee's role has been updated in the database."))
                             .then(() => userPrompts())
                     });
             });
     })
 }
 
+// user can exit the CLI
 exitCLI = () => {
     process.exit();
 }
