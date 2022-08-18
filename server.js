@@ -115,8 +115,8 @@ userAddDepts = () => {
     ])
     .then(res => {
         let name = res;
-        dbLink.addDepts(dept_name)
-            .then(() => console.log(`${name.dept_name} has been added to the department database.`))
+        dbLink.addDepts(name)
+            .then(() => console.log(`${name.name} has been added to the department database.`))
             .then(() => userPrompts());
     })
 }
