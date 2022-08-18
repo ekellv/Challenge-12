@@ -229,17 +229,15 @@ userAddEmployee = () => {
                                         .then(res => {
                                             let employee = {
                                                 manager_id: res.managerId,
-                                                role_id: roleId,
+                                                roles_id: roleId,
                                                 first_name: firstName,
                                                 last_name: lastName
                                             }
 
                                             dbLink.addEmployee(employee);
                                         })
-                                        .then(() => console.log(
-                                            `${firstName} ${lastName} has been added to the employee database.`
-                                        ))
-                                        .then(() => userPrompts())
+                                        .then(() => console.log(`${firstName} ${lastName} has been added to the employee database.`))
+                                        .then(() => userViewEmployees())
                                 })
                         })
                 })
