@@ -1,13 +1,15 @@
 use employees_db; 
 
-INSERT INTO department (name)
+INSERT INTO department 
+    (dept_name)
 VALUES
     ('HR'),
     ('Finance & Accounting'),
     ('IT'),
     ('Sales & Marketing'); 
 
-INSERT INTO roles (title, salary, department_id)
+INSERT INTO roles 
+    (title, salary, department_id)
 VALUES 
     ('HR Lead', 100000, 1),
     ('HR Partner', 75000, 1),
@@ -18,7 +20,8 @@ VALUES
     ('Marketing Director', 140000, 4), 
     ('Sales Lead', 80000, 4);
 
-INSERT INTO employee (first_name, last_name, roles_id, manager_id)
+INSERT INTO employee 
+    (first_name, last_name, roles_id, manager_id)
 VALUES 
     ('Ron', 'Swanson', 1, NULL),
     ('Leslie', 'Knope', 2, 1),
