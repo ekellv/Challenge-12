@@ -8,7 +8,7 @@ Employee Tracker is an app run in the command line to allow the user to simply a
 
 ![Github license](http://img.shields.io/badge/License-MIT-yellow.svg)
 
-[A version of the deployed website can be viewed here.](https://github.com/ekellv/Employee-Tracker)
+[A visual demonstration of the app can be found here.](https://drive.google.com/file/d/1wwMOr7CcGqFuys4r2JMEyaMs28Osi8av/view)
 
 ## Contents
 1. [About](#about)
@@ -81,7 +81,6 @@ THEN I am prompted to select an employee to update and their new role and this i
 ![emp-tracker-1](https://user-images.githubusercontent.com/103372188/185486206-30e9d230-3bfc-4d86-8ac3-587ce5b86518.png)
 ![emp-tracker-2](https://user-images.githubusercontent.com/103372188/185486224-af6179bc-9e6b-4446-855e-213715945dde.png)
 ![emp-tracker-3](https://user-images.githubusercontent.com/103372188/185486235-1583b3c1-c5f6-457d-8f80-0004bafd78e4.png)
-
 
 ## Technologies
 
