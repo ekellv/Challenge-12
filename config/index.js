@@ -11,7 +11,7 @@ class employeeDatabase {
     // view departments function 
     viewDepts() {
         return this.connection.promise().query(
-            `SELECT department.id, department.name FROM department`
+            `SELECT * FROM department`
         );
     }
 
@@ -23,7 +23,7 @@ class employeeDatabase {
     // view roles function
     viewRoles() {
         return this.connection.promise().query(
-            `SELECT roles.id, roles.title, department.name AS department, roles.salary FROM roles INNER JOIN department on roles.department_id = department.id;`
+            `SELECT roles.id, roles.title, department.name AS department, roles.salary FROM roles LEFT JOIN department on roles.department_id = department.id;`
         );
     }
 
@@ -54,13 +54,13 @@ class employeeDatabase {
 
     // add employee function
     addEmployee(employee) {
-        return this.connection.promise().query(`INSERT INTO employee SET ?`, employee);
+        return this.connection.promise().query("INSERT INTO employee SET ?", employee);
     }
 
     // update employee role function 
-    updateEmpRole() {
+    updateEmpRole(employeeID, rolesID) {
         return this.connection.promise().query(
-            `UPDATE employee SET roles_id = ? WHERE id = ?`, 
+            "UPDATE employee SET roles_id = ? WHERE id = ?",
             [rolesID, employeeID]
         );
     }
